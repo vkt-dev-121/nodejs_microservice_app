@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  user-service:
+    build: ./services/user-service
+    ports:
+      - "3001: 3000"
+    environment: 
+      - MONGO_URL=mongodb://your-mongo-url
+      - PORT=3000
+  
+  order-service:
+    build: ./services/order-service
+    ports:
+      - "3002: 3000"
+    environment: 
+      - MONGO_URL=mongodb://your-mongo-url
+      - PORT=3000
+
+  product-service:
+    build: ./services/product-service
+    ports:
+      - "3003: 3000"
+    environment: 
+      - MONGO_URL=mongodb://your-mongo-url
+      - PORT=3000
+  
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "3000: 3000"
+    environment: 
+      - USER_SERVICE_URL=http://user-service:3000
+      - PORT=3000
+      - ORDER_SERVICE_URL=http://order-service:3000
+      - PRODUCT_SERVICE_URL=http://product-service:3000
+
+  mongo: 
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
+
